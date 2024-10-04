@@ -1,9 +1,9 @@
 export default function handleResponseFromAPI(promise) {
   const p = new Promise((resolve, reject) => {
     if (promise) {
-      resolve({ status: 200, body: 'Success' });
+      return resolve({ status: 200, body: 'Success' });
     } else {
-      reject(new Error());
+      return reject(new Error());
     }
   });
 
