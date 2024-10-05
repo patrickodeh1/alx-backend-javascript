@@ -6,7 +6,7 @@ export default class HolbertonCourse {
       this._length = length;
       this._students = students;
     } else {
-      throw new TypeError("invalid type");
+      throw new TypeError('invalid type');
     }
   }
 
