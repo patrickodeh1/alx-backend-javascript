@@ -6,7 +6,7 @@ export default class EVCar extends Car {
     this._range = range;
   }
 
-  cloneCar() {
+  static cloneCar() {
     const clone = new Car(undefined, undefined, undefined);
     return clone;
   }
