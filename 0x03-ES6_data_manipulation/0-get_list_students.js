@@ -1,3 +1,7 @@
+/**
+ * Retrieves a list of students.
+ */
+
 export default function getListStudents() {
   const students = [
     {

@@ -4,5 +4,5 @@ export default function getStudentsByLocation(arr, city) {
     const students = arr.filter((item) => item.location === city);
     return students;
   }
-  throw new TypeError('Enter the correct data');
+  return [];
 }
