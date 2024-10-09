@@ -1,11 +1,5 @@
-/**
- * Retrieves a list of students.
- * @author Patrick Odeh
- * @returns {{id: Number, firstName: String, location: String}[]}
- */
-
 export default function getListStudents() {
-  const students = [
+  return [
     {
       id: 1,
       firstName: 'Guilaume',
@@ -22,5 +16,4 @@ export default function getListStudents() {
       location: 'San Francisco',
     },
   ];
-  return students;
 }
