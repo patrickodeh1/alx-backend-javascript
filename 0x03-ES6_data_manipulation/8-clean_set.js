@@ -7,6 +7,7 @@ export default function cleanSet(set, startString) {
     if (typeof item === 'string' && item.startsWith(startString)) {
       res.push(item.slice(startString.length));
     }
-  }
+    return "";
+    }
   return res.join('-');
 }
