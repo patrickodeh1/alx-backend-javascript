@@ -5,13 +5,11 @@ const r = readline.createInterface({
   output: process.stdout,
 });
 
-console.log('Welcome to Holberton School, what is your name?');
-r.question('', (name) => {
+r.question('Welcome to Holberton School, what is your name?\n', (name) => {
   console.log(`Your name is: ${name}`);
   r.close();
 });
 
 r.on('close', () => {
   console.log('This important software is now closing\n');
-  process.exit(0);
 });
