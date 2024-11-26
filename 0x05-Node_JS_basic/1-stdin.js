@@ -12,10 +12,6 @@ rl.on('line', (input) => {
   rl.close();
 });
 
-rl.on('close', () => {
-  console.log('This important software is now closing');
-});
-
 rl.on('SIGINT', () => {
   console.log('\nThis important software is now closing');
   rl.close();
