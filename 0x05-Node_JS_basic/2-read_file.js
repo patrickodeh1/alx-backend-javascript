@@ -4,7 +4,7 @@ function countStudents(path) {
   try {
     const data = fs.readFileSync(path, 'utf-8');
     const lines = data.split('\n').filter((line) => line.trim() !== '');
-    
+
     if (lines.length <= 1) {
       throw new Error('No valid student data in the file');
     }
@@ -29,13 +29,13 @@ function countStudents(path) {
 
     const totalStudents = Object.values(studentsByField).reduce(
       (acc, names) => acc + names.length,
-      0
+      0,
     );
 
     console.log(`Number of students: ${totalStudents}`);
     for (const [field, names] of Object.entries(studentsByField)) {
       console.log(
-        `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`
+        `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`,
       );
     }
   } catch (error) {
