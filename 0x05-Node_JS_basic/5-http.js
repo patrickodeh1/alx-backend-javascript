@@ -1,47 +1,56 @@
 const http = require('http');
-const url = require('url');
-const countStudents = require('./3-read_file_async');
+const fs = require('fs');
 
-const database = process.argv[2];
-if (!database) {
-  console.error('Error: Database file is required as a command-line argument');
-  process.exit(1);
-}
+const hostname = '127.0.0.1';
+const port = 1245;
 
-const app = http.createServer(async (req, res) => {
-  const parsedUrl = url.parse(req.url, true);
+const countStudents = (filePath) => {
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+    const lines = data.trim().split('\n').slice(1); // Exclude header row
+    const students = {};
 
-  if (parsedUrl.pathname === '/') {
-    res.writeHead(200, { 'content-type': 'text/plain' });
+    lines.forEach((line) => {
+      const [name, , , field] = line.split(',');
+      if (field) {
+        if (!students[field]) students[field] = [];
+        students[field].push(name);
+      }
+    });
+
+    console.log(`Number of students: ${lines.length}`);
+    for (const [field, names] of Object.entries(students)) {
+      console.log(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`);
+    }
+    return `Number of students: ${lines.length}\n` + 
+      Object.entries(students)
+        .map(([field, names]) => `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`)
+        .join('\n');
+  } catch (err) {
+    throw new Error('Cannot load the database');
+  }
+};
+
+const app = http.createServer((req, res) => {
+  if (req.url === '/') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end('Hello Holberton School!');
-  } else if (parsedUrl.path === '/students') {
+  } else if (req.url === '/students') {
+    const filePath = process.argv[2];
+
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.write('This is the list of our students\n');
-
-    const originalLog = console.log;
-    const outputLogs = [];
-    console.log = (message) => {
-      outputLogs.push(message);
-    };
-
     try {
-      await countStudents(database);
-      console.log = originalLog;
-      res.end(outputLogs.join('\n'));
-    } catch (error) {
-      console.log = originalLog;
-      res.end(`${error.message}\n`);
+      const result = countStudents(filePath);
+      res.end(result);
+    } catch (err) {
+      res.end(err.message);
     }
-  } else {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('404 Not Found\n');
   }
 });
 
-app.listen(1245, () => {
-  console.log('...');
-}).on('error', (err) => {
-  console.error('Error starting server:', err.message);
+app.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
 });
 
 module.exports = app;
