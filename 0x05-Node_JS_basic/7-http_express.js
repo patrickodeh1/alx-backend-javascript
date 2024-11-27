@@ -1,51 +1,68 @@
 const express = require('express');
 const fs = require('fs');
 
-const app = express();
-const port = 1245;
-
-const countStudents = (filePath) => {
-  try {
-    const data = fs.readFileSync(filePath, 'utf8');
-    const lines = data.trim().split('\n').slice(1); // Exclude header row
-    const students = {};
-
-    lines.forEach((line) => {
-      const [name, , , field] = line.split(',');
-      if (field) {
-        if (!students[field]) students[field] = [];
-        students[field].push(name);
+function countStudents(path) {
+  return new Promise((resolve, reject) => {
+    // eslint-disable-next-line consistent-return
+    fs.readFile(path, (error, dataBuffer) => {
+      if (error) {
+        return reject();
       }
+      const data = dataBuffer.toString().split('\n');
+      let count = 0;
+      const fields = {};
+
+      const firstnameIndex = data[0].split(',').indexOf('firstname');
+      const fieldIndex = data[0].split(',').indexOf('field');
+      // eslint-disable-next-line no-plusplus
+      for (let i = 1; i < data.length; i++) {
+        // eslint-disable-next-line no-continue
+        if (data[i] === '') continue;
+        // eslint-disable-next-line no-plusplus
+        count++;
+        const row = data[i].split(',');
+        if (fields[row[fieldIndex]]) {
+          fields[row[fieldIndex]].push(row[firstnameIndex]);
+        } else {
+          fields[row[fieldIndex]] = [row[firstnameIndex]];
+        }
+      }
+      let studentsData = 'This is the list of our students\n';
+      studentsData += `Number of students: ${count}\n`;
+
+      // eslint-disable-next-line guard-for-in
+      for (const field in fields) {
+        studentsData += `Number of students in ${field}: ${
+          fields[field].length
+        }. List: ${fields[
+          field
+          // eslint-disable-next-line comma-dangle
+        ].join(', ')}\n`;
+      }
+      resolve(studentsData.slice(0, -1));
     });
-
-    const totalCount = `Number of students: ${lines.length}`;
-    const fieldCount = Object.entries(students)
-      .map(([field, names]) => `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`)
-      .join('\n');
-
-    return `${totalCount}\n${fieldCount}`;
-  } catch (err) {
+  }).catch(() => {
     throw new Error('Cannot load the database');
-  }
-};
+  });
+}
+
+const app = express();
 
 app.get('/', (req, res) => {
   res.send('Hello Holberton School!');
 });
 
 app.get('/students', (req, res) => {
-  const filePath = process.argv[2];
-
-  try {
-    const result = countStudents(filePath);
-    res.send(`This is the list of our students\n${result}`);
-  } catch (err) {
-    res.send(err.message);
-  }
+  const path = process.argv[2];
+  countStudents(path)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((error) => {
+      res.send(`This is the list of our students\n${error.message}`);
+    });
 });
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+app.listen(1245);
 
 module.exports = app;
