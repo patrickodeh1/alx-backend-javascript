@@ -22,10 +22,10 @@ const countStudents = (filePath) => {
     for (const [field, names] of Object.entries(students)) {
       console.log(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`);
     }
-    return `Number of students: ${lines.length}\n` + 
+    return `Number of students: ${lines.length}\n${
       Object.entries(students)
         .map(([field, names]) => `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`)
-        .join('\n');
+        .join('\n')}`;
   } catch (err) {
     throw new Error('Cannot load the database');
   }

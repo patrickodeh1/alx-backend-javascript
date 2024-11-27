@@ -1,42 +1,51 @@
 const express = require('express');
-const countStudents = require('./3-read_file_async');
+const fs = require('fs');
 
 const app = express();
-const PORT = 1245;
+const port = 1245;
+
+const countStudents = (filePath) => {
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+    const lines = data.trim().split('\n').slice(1); // Exclude header row
+    const students = {};
+
+    lines.forEach((line) => {
+      const [name, , , field] = line.split(',');
+      if (field) {
+        if (!students[field]) students[field] = [];
+        students[field].push(name);
+      }
+    });
+
+    const totalCount = `Number of students: ${lines.length}`;
+    const fieldCount = Object.entries(students)
+      .map(([field, names]) => `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`)
+      .join('\n');
+
+    return `${totalCount}\n${fieldCount}`;
+  } catch (err) {
+    throw new Error('Cannot load the database');
+  }
+};
 
 app.get('/', (req, res) => {
-  res.set('Content-Type', 'text/plain');
   res.send('Hello Holberton School!');
 });
 
-app.get('/students', async (req, res) => {
-  res.set('Content-Type', 'text/plain');
-  res.write('This is the list of our students\n');
-
-  const database = process.argv[2];
-  if (!database) {
-    res.end('Database file path is missing\n');
-    return;
-  }
+app.get('/students', (req, res) => {
+  const filePath = process.argv[2];
 
   try {
-    const originalLog = console.log;
-    const outputLogs = [];
-    console.log = (message) => {
-      outputLogs.push(message);
-    };
-
-    await countStudents(database);
-    console.log = originalLog;
-
-    res.end(outputLogs.join('\n'));
-  } catch (error) {
-    res.end(`${error.message}\n`);
+    const result = countStudents(filePath);
+    res.send(`This is the list of our students\n${result}`);
+  } catch (err) {
+    res.send(err.message);
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
 
 module.exports = app;
