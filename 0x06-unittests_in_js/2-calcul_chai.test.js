@@ -1,7 +1,6 @@
 const chai = require('chai');
 const expect = chai.expect;
 const calculateNumber = require('./2-calcul_chai');
-import calculateNumber from './2-calcul_chai.js'
 describe('calculateNumber', function () {
   it("calculateNumber should return 5 when 'SUM', 2 and 2.6 are passed", function () {
     const result = calculateNumber('SUM', 2, 2.6);

@@ -1,8 +1,10 @@
 {
   "type": "commonjs",
-  "scripts": {"test": "mocha"},
+  "scripts": {
+    "test": "mocha"
+  },
   "devDependencies": {
-    "chai": "^5.1.2",
+    "chai": "^4.3.7",
     "mocha": "^10.8.2"
   }
 }
