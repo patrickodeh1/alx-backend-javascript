@@ -15,7 +15,7 @@ describe('Index Page', function () {
                 done();
             });
     });
-    it('should return the correct result', function (done) {
+    it('should return the correct result', function () {
         chai.request(app)
             .get('/')
             .end((err, res) => {
