@@ -2,7 +2,10 @@ const chai = require('chai');
 const fetch = require('node-fetch');
 const {expect} = chai;
 const app = require('./api');
-const server = app.listen(7865);
+let server;
+before(function () {
+    server = app.listen(7865);
+  });
 
 describe('Index Page', function () {
     it('should return the correct status code', async function () {
