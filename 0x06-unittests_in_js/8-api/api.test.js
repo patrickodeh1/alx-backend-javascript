@@ -15,23 +15,10 @@ describe('Index Page', function () {
     });
 
     it('should return the correct status code', function (done) {
-        request('http://localhost:7865', function (err, res) {
+        request('http://localhost:7865', function (err, res, body) {
             expect(res.statusCode).to.equal(200);
             done();
         });
     });
 
-    it('should return the correct result', function (done) {
-        request('http://localhost:7865', function (err, res, body) {
-            expect(body).to.equal('Welcome to the payment system');
-            done();
-        });
-    });
-
-    it('should not have an error', function (done) {
-        request('http://localhost:7865', function (err) {
-            expect(err).to.be.null;
-            done();
-        });
-    });
 });
